@@ -1,4 +1,6 @@
 @echo off
+setlocal EnableDelayedExpansion
+
 
 :: Вид сборки / суффикс в названии каталога сборки
 ::
@@ -21,3 +23,5 @@ cmake -G %BUILD_TYPE% ..\%SOURCE_FOLDER%
 cmake --build .
 
 copy ..\%SOURCE_FOLDER%\treesort\run_treesort.bat .\treesort
+
+copy ..\run_tests.bat .
