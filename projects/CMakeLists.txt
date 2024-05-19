@@ -10,6 +10,6 @@ set(SCL_LIB "scl_lib")
 add_subdirectory(scl)
 
 add_subdirectory(treesort)
-add_subdirectory(unit_test_example)
+
 
 set(CMAKE_SUPPRESS_REGENERATION true)
