@@ -1,112 +1,95 @@
-#include "list_deque.hpp"
+#include <iostream>
 
 
-template<typename T>
-Browka::ListDeque<T>::~ListDeque() noexcept {
-    Node* current = begin;
-    while (current != nullptr) {
-        Node* temp = current;
-        current = current->next;
-        delete temp;
-    }
-};
+#include "doubly_linked_list.hpp"
 
 
-template<typename T>
-bool Browka::ListDeque<T>::empty() const noexcept {
-    return begin == nullptr;
-};
+namespace Browka {
 
+   
 
-template<typename T>
-void Browka::ListDeque<T>::pop_back() noexcept {
-    if (begin == nullptr) {
-        return;
-    }
-    if (begin == end) {
-        delete begin;
-        begin = nullptr;
-        end = nullptr;
-        return;
-    }
-    Node* temp = begin;
-    while (temp->next != end) {
-        temp = temp->next;
-    }
-    delete end;
-    end = temp;
-    end->next = nullptr;
-};
-
-
-template<typename T>
-void Browka::ListDeque<T>::pop_front() noexcept {
-    if (begin == nullptr) {
-        return;
-    }
-    Node* temp = begin;
-    begin = begin->next;
-    delete temp;
-    if (begin == nullptr) {
-        end = nullptr;
-    }
-};
-
-
-template<typename T>
-void Browka::ListDeque<T>::push_back(const T& value) noexcept {
-    Node* newNode = new Node(value);
-    if (begin == nullptr) {
-        begin = newNode;
-    }
-    else {
-        end->next = newNode;
+    template<typename T>
+    DoublyLinkedList<T>::~DoublyLinkedList() noexcept {
+        Node* tmp;
+        while (begin != nullptr) {
+            tmp = begin;
+            begin = begin->next;
+            delete tmp;
+        }
     }
 
-    end = newNode;
-};
+    template<typename T>
+    void DoublyLinkedList<T>::push_back(const T& value) noexcept {
+        Node* new_node = new Node(value);
+        new_node->next = nullptr;
+        new_node->prev = end;
+        if (end != nullptr)
+            end->next = new_node;
+        if (begin == nullptr)
+            begin = new_node;
+        end = new_node;
 
-
-template<typename T>
-void Browka::ListDeque<T>::push_front(const T& value) noexcept {
-    Node* newNode = new Node(value);
-    if (begin == nullptr) {
-        end = newNode;
-    }
-    else {
-        newNode->next = begin;
-    }
-
-    begin = newNode;
-};
-
-
-template<typename T>
-std::size_t Browka::ListDeque<T>::size() const noexcept {
-    std::size_t size = 0;
-    Node* current = begin;
-    while (current != nullptr) {
-        size++;
-        current = current->next;
     }
 
-    return size;
-};
+    template<typename T>
+    bool DoublyLinkedList<T>::has_item(const T& value) const noexcept {
+        Node* current = begin;
 
+        while (current->value != value && current->next != nullptr) {
+            current = current->next;
+        }
 
-template<typename T>
-T Browka::ListDeque<T>::back() const noexcept {
-    if (end != nullptr) {
-        return end->value;
+        if (current->value != value)
+            return false;
+        return true;
     }
-    return false;
-};
 
 
-template<typename T>
-T Browka::ListDeque<T>::front() const noexcept {
-    if (begin != nullptr) {
-        return begin->value;
+    template<typename T>
+    void DoublyLinkedList<T>::print() const noexcept {
+        Node* current = begin;
+
+        while (current != nullptr) {
+            std::cout << current->value << " ";
+            current = current->next;
+        }
     }
-    return false;
+
+    template<typename T>
+    bool DoublyLinkedList<T>::remove_first(const T& value) noexcept { 
+        if (has_item(value) == false) {
+            return false; //здесь в зависимости от логики, то есть, если этого элемента не было, то и удаления не было
+        }
+
+        Node* current = begin;
+        while (current != nullptr) {
+            if (current->value == value) {
+                if (current->prev != nullptr)
+                    current->prev->next = current->next; //то есть если это не начало, то связываем предыдущий (current->prev)->next и следующий
+                else
+                    begin = current->next;
+
+                if (current->next != nullptr)
+                    current->next->prev = current->prev; //те если это не конец, то то связываем следующий и предыдущий
+                else
+                    end = current->prev;
+
+                delete current;
+            }
+            current = current->next;
+        }
+
+        return true;
+    }
+
+    template<typename T>
+    std::size_t DoublyLinkedList<T>::size() const noexcept {
+        std::size_t count = 0;
+        Node* current = begin;
+        while (current != nullptr) {
+            count++;
+            current = current->next;
+        }
+        return count;
+    }
 }

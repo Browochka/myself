@@ -6,6 +6,9 @@ enable_testing()
 
 add_subdirectory(lib/googletest)
 
+set(SCL_LIB "scl_lib")
+add_subdirectory(scl)
+
 add_subdirectory(treesort)
 add_subdirectory(unit_test_example)
 
